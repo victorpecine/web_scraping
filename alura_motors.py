@@ -2,14 +2,19 @@ from urllib.request import urlopen, Request
 from urllib.error import URLError, HTTPError
 from bs4 import BeautifulSoup
 
-url = 'https://www.alura.com.br'
-headers = {'User-Agent': 'Chrome/76.0.3809.100'}
+url = 'https://alura-site-scraping.herokuapp.com/index.php'
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:104.0) Gecko/20100101 Firefox/104.0'}
 
 
 try:
-    req = Request(url)
+    req = Request(url, headers=headers)
     response = urlopen(req)
-    print(response.read())
+    html = response.read()
+    soup = BeautifulSoup(html, 'html.parser')
+    title = soup.title.get_text()
+    h5 = soup.h5.get_text()
+    print(title)
+    print(h5)
 
 except HTTPError as e:
     print(e.status, e.reason)
