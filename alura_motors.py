@@ -11,10 +11,9 @@ try:
     response = urlopen(req)
     html = response.read()
     soup = BeautifulSoup(html, 'html.parser')
-
-    for item in soup.find_all('img', alt='Foto'):
-        links_imagens = item.get('src')
-        print(links_imagens)
+    nome_carro = soup.find('p', {'class': 'txt-name'}).get_text().title()
+    valor_carro = soup.find('p', {'class': 'txt-value'}).get_text()
+    print('{} = {}'.format(nome_carro, valor_carro))
 
 except HTTPError as e:
     print(e.status, e.reason)
