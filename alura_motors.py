@@ -11,10 +11,10 @@ try:
     response = urlopen(req)
     html = response.read()
     soup = BeautifulSoup(html, 'html.parser')
-    title = soup.title.get_text()
-    h5 = soup.h5.get_text()
-    print(title)
-    print(h5)
+
+    soup = soup.find_all('p', {'class': 'txt-value'})
+
+    print(len(soup))
 
 except HTTPError as e:
     print(e.status, e.reason)
