@@ -12,9 +12,9 @@ try:
     html = response.read()
     soup = BeautifulSoup(html, 'html.parser')
 
-    soup = soup.find_all('p', {'class': 'txt-value'})
-
-    print(len(soup))
+    for item in soup.find_all('img', alt='Foto'):
+        links_imagens = item.get('src')
+        print(links_imagens)
 
 except HTTPError as e:
     print(e.status, e.reason)
