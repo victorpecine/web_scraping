@@ -15,29 +15,38 @@ try:
     response = urlopen(req)
     html = response.read()
     soup = BeautifulSoup(html, 'html.parser')
+    numero_pagina = soup.find('span', class_='info-pages').get_text().split()[-1]
+    numero_pagina = int(numero_pagina)
     
-    anuncios = soup.find('div', {"id": "container-cards"}).findAll('div', class_="card")
+    for i in range(numero_pagina):
+        url = url + '?page=' + str(i + 1)
+        response = urlopen(req)
+        html = response.read()
+        soup = BeautifulSoup(html, 'html.parser')
 
-    for anuncio in anuncios:
-        card = {}
-                
-        card['value'] = anuncio.find('p', {'class': 'txt-value'}).get_text() # Valor do carro
 
-        infos_carros = anuncio.find('div', {'class': 'body-card'}).find_all('p')
-        for info in infos_carros:
-            card[info.get('class')[0].split('-')[-1]] = (info.get_text()).title()
+        anuncios = soup.find('div', {"id": "container-cards"}).findAll('div', class_="card")
 
-        acessorios_carro = anuncio.find('div', {'class': 'body-card'}).find_all('li')
-        acessorios_carro.pop()
-        acessorios = []
-        for itens in acessorios_carro:
-            acessorios.append(itens.get_text().replace('►', '').title())
-        card['items'] = acessorios
+        for anuncio in anuncios:
+            card = {}
+                    
+            card['value'] = anuncio.find('p', {'class': 'txt-value'}).get_text() # Valor do carro
 
-        cards.append(card)
+            infos_carros = anuncio.find('div', {'class': 'body-card'}).find_all('p')
+            for info in infos_carros:
+                card[info.get('class')[0].split('-')[-1]] = (info.get_text()).title()
 
-        imagem = anuncio.find('div', {'class':'image-card'}).img
-        urlretrieve(imagem.get('src'), 'imagens/' + imagem.get('src').split('/')[-1])
+            acessorios_carro = anuncio.find('div', {'class': 'body-card'}).find_all('li')
+            acessorios_carro.pop()
+            acessorios = []
+            for itens in acessorios_carro:
+                acessorios.append(itens.get_text().replace('►', '').title())
+            card['items'] = acessorios
+
+            cards.append(card)
+
+            imagem = anuncio.find('div', {'class':'image-card'}).img
+            urlretrieve(imagem.get('src'), 'imagens/' + imagem.get('src').split('/')[-1])
  
 except HTTPError as e:
     print(e.status, e.reason)
@@ -48,4 +57,4 @@ except URLError as e:
 
 df_carros = pd.DataFrame(cards)
 
-df_carros.to_csv('dados/alura_motors_pagina_1.csv', index=False, encoding='utf-8-sig')
+# df_carros.to_csv('dados/alura_motors_completo.csv', index=False, encoding='utf-8-sig')
