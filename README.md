@@ -4,6 +4,7 @@
 
 ![Progresso](https://img.shields.io/badge/progresso-50%25-brightgreen)
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+
 Curso: Scraping com python - Coleta de dados da web - [Alura](https://www.alura.com.br/).
 
 ### Ambiente e bibliotecas

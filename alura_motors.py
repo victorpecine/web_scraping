@@ -9,23 +9,35 @@ headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:104.0) Ge
 
 cards = []
 card = {}
-acessorios = []
 
 try:
     req = Request(url, headers=headers)
     response = urlopen(req)
     html = response.read()
     soup = BeautifulSoup(html, 'html.parser')
-    infos_carro = soup.find('div', {'class': 'body-card'}).find_all('p')
-    acessorios_carro = soup.find('div', {'class': 'body-card'}).find_all('li')
-    acessorios_carro.pop()
+    
+    anuncios = soup.find('div', {"id": "container-cards"}).findAll('div', class_="card")
 
-    for info in infos_carro:
-        card[info.get('class')[0].split('-')[-1]] = (info.get_text()).title()
+    for anuncio in anuncios:
+        card = {}
+                
+        card['value'] = anuncio.find('p', {'class': 'txt-value'}).get_text() # Valor do carro
 
-    for itens in acessorios_carro:
-        acessorios.append(itens.get_text().replace('►', '').title())
+        infos_carros = anuncio.find('div', {'class': 'body-card'}).find_all('p')
+        for info in infos_carros:
+            card[info.get('class')[0].split('-')[-1]] = (info.get_text()).title()
+
+        acessorios_carro = anuncio.find('div', {'class': 'body-card'}).find_all('li')
+        acessorios_carro.pop()
+        acessorios = []
+        for itens in acessorios_carro:
+            acessorios.append(itens.get_text().replace('►', '').title())
         card['items'] = acessorios
+
+        cards.append(card)
+
+        imagem = anuncio.find('div', {'class':'image-card'}).img
+        urlretrieve(imagem.get('src'), 'imagens/' + imagem.get('src').split('/')[-1])
  
 except HTTPError as e:
     print(e.status, e.reason)
@@ -34,12 +46,6 @@ except URLError as e:
     print(e.reason)
 
 
-df_carros = pd.DataFrame.from_dict(card, orient='index').transpose()
+df_carros = pd.DataFrame(cards)
 
-# df_carros.to_csv('dados/alura_motors.csv', index=False, encoding='utf-8-sig')
-
-
-imagem = soup.find('div', {'class':'image-card'}).img
-imagem.get('src').split('/')[-1]
-
-urlretrieve(imagem.get('src'), 'imagens/' + imagem.get('src').split('/')[-1])
+df_carros.to_csv('dados/alura_motors_pagina_1.csv', index=False, encoding='utf-8-sig')
