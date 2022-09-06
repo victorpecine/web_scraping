@@ -1,4 +1,4 @@
-from urllib.request import urlopen, Request
+from urllib.request import urlopen, Request, urlretrieve
 from urllib.error import URLError, HTTPError
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -36,4 +36,10 @@ except URLError as e:
 
 df_carros = pd.DataFrame.from_dict(card, orient='index').transpose()
 
-df_carros.to_csv('dados/alura_motors.csv', index=False, encoding='utf-8-sig')
+# df_carros.to_csv('dados/alura_motors.csv', index=False, encoding='utf-8-sig')
+
+
+imagem = soup.find('div', {'class':'image-card'}).img
+imagem.get('src').split('/')[-1]
+
+urlretrieve(imagem.get('src'), 'imagens/' + imagem.get('src').split('/')[-1])
