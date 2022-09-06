@@ -45,8 +45,8 @@ try:
 
             cards.append(card)
 
-            imagem = anuncio.find('div', {'class':'image-card'}).img
-            urlretrieve(imagem.get('src'), 'imagens/' + imagem.get('src').split('/')[-1])
+            imagem = anuncio.find('div', {'class': 'image-card'}).img
+            urlretrieve(imagem.get('src'), 'imagens/' + imagem.get('src').split('/')[-1])     
  
 except HTTPError as e:
     print(e.status, e.reason)
